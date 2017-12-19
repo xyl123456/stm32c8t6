@@ -4,8 +4,12 @@
 #include "sys.h"
 
 
-#define HAL_REJEST_LENGTH  22
-#define HAL_HEART_LENGTH   13
+#define HAL_REJEST_LENGTH  					22
+#define HAL_HEART_LENGTH   					13
+#define HAL_DATAUP_LENGTH           25
+#define HAL_MODIFY_LENGTH           13
+
+
 //身份登记
 typedef union Rejest_up
 {
@@ -61,7 +65,7 @@ typedef union Heart_up
 //设备数据
 typedef union Data_up
 {
-   unsigned char data_buf[31];
+   unsigned char data_buf[25];
    struct data_up_t
    {
        unsigned char Head_byte[2];//0xEB 0x90
@@ -72,8 +76,6 @@ typedef union Data_up
        unsigned char PM03[3];//第一个字节0x0E,后两个是数据，数据为整数
        unsigned char TEM[3];//第一个字节0x03,后两个是数据,数据为1000+数据准换16
        unsigned char HUM[3];//第一个字节0x04,后两个是数据,数据为1000+数据准换16
-       unsigned char POW[3];//第一个字节0x0A,后两个是数据，数据为百分比
-       unsigned char POW_STA[3];//如果充电则为0X01，不充电为0x00
        unsigned char Check_code[2];//校验码，除去包头和包尾所有字节的累加和
        unsigned char Tial[2];//0x0D 0x0A
    }data_core;
@@ -87,7 +89,7 @@ typedef union Dev_control
    struct dec_ctl_t
    {
        unsigned char Head_byte[2];//0xEB 0x90
-       unsigned char Data_length[2];//0x00 0x18
+       unsigned char Data_length[2];//0x00 0x16
        unsigned char Data_type; //数据的类型0x05
        unsigned char MAC_addr[4];   //设备地址 
        unsigned char Serial_code[8];//命令流水号
@@ -119,7 +121,7 @@ typedef union Dev_up
    struct dec_up_t
    {
        unsigned char Head_byte[2];//0xEB 0x90
-       unsigned char Data_length[2];//0x00 0x0D
+       unsigned char Data_length[2];//0x00 0x0B
        unsigned char Data_type; //数据的类型0xFE
        unsigned char MAC_addr[4];   //设备地址 
        unsigned char Check_code[2];//校验码，除去包头和包尾所有字节的累加和
@@ -157,6 +159,14 @@ typedef union PM25_up
 void send_rejest_data(void);
 uint16_t  Sum_data(unsigned char buf[],int start,int stop);
 void send_serial_data(void);
+void send_heart_data(void);
+
+void App_process_uart(u8 port,u8 buf[],u8 len);
+
+
+extern void myuart_init(u8 port,u32 bound);
+extern void uart_receve_handle(void);
+
 extern void hal_board_init(void);
 extern void event_task_handle(void);		    
 #endif

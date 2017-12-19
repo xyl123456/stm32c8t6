@@ -337,6 +337,7 @@ void USART3_IRQHandler(void)                	//串口3中断服务程序
      } 	
 }
 
+//串口发送函数
 void myuart_send(u8 port,u8 buf[],u8 len)
 {
 	u8 t;
@@ -359,43 +360,6 @@ void myuart_send(u8 port,u8 buf[],u8 len)
 		while(USART_GetFlagStatus(USART3,USART_FLAG_TC)!=SET);
 		}
 	}
-}
-
-void uart_receve_handle(void)
-{
-	if(USART_RX_STA&0x8000)
-		{	
-			u8 uart_len;
-			u8 uart_commandbuf[USART_REC_LEN];
-			uart_len=USART_RX_STA&0x3fff;//得到此次接收到的数据长度
-			mymemcpy(uart_commandbuf,USART_RX_BUF,uart_len);
-			myuart_send(HAL_UART1,uart_commandbuf,uart_len);
-			USART_RX_STA=0;
-			mymemset(uart_commandbuf,0,USART_REC_LEN);
-		}
-		if(USART2_RX_STA&0x8000)
-		{	
-			u8 uart2_len;
-			u8 uart2_commandbuf[USART_REC_LEN];
-			uart2_len=USART2_RX_STA&0x3fff;//得到此次接收到的数据长度
-			mymemcpy(uart2_commandbuf,USART2_RX_BUF,uart2_len);
-			myuart_send(HAL_UART2,uart2_commandbuf,uart2_len);
-			USART2_RX_STA=0;
-			mymemset(uart2_commandbuf,0,USART_REC_LEN);
-		}	
-		if(USART3_RX_STA&0x8000)
-		{	
-			u8 uart3_len;
-			u8 uart3_commandbuf[USART_REC_LEN];
-			uart3_len=USART3_RX_STA&0x3fff;//得到此次接收到的数据长度
-
-			mymemcpy(uart3_commandbuf,USART3_RX_BUF,uart3_len);
-			myuart_send(3,uart3_commandbuf,uart3_len);
-
-			USART3_RX_STA=0;
-			mymemset(uart3_commandbuf,0,USART_REC_LEN);
-		}	
-		
 }
 
 #endif	

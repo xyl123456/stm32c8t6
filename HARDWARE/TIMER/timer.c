@@ -21,6 +21,7 @@
 //这里使用的是定时器3!
 
 int time3_cnt=0;
+int time3_heart_cnt=0;
 
 int sys_event_flag =0;
 
@@ -57,12 +58,13 @@ void TIM3_IRQHandler(void)   //TIM3中断
 		{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);  //清除TIMx更新中断标志 
 			time3_cnt++;
+			time3_heart_cnt++;
 			if((time3_cnt%SEND_SERIAL_DATA)==0){
-				
+				time3_cnt=0;
 				sys_event_flag |=SEND_SERIAL_EVENT;
 			}
-			if((time3_cnt%HEART_SERIAL_DATA)==0){
-				time3_cnt=0;
+			if((time3_heart_cnt%HEART_SERIAL_DATA)==0){
+				time3_heart_cnt=0;
 				sys_event_flag |=HEART_SERIAL_EVENT;
 				
 			}
